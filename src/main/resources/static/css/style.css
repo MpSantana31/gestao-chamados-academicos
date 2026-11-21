@@ -104,6 +104,13 @@ header {
   text-decoration: none;
 }
 
+.usuario {
+  color: var(--texto2);
+  font-size: 0.8rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+  padding: 0.25rem 0.5rem;
+}
+
 header nav {
   display: flex;
   align-items: center;
@@ -377,11 +384,85 @@ td.mono,
   margin: 0;
 }
 
-.painel .card p {
+.kpi span {
+  display: block;
+  color: var(--texto2);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kpi strong {
+  display: block;
+  margin-top: 0.35rem;
   font-family: "Epilogue", "Inter", sans-serif;
-  font-size: 1.7rem;
+  font-size: 1.9rem;
   font-weight: 600;
-  color: var(--texto);
+}
+
+.conclusao {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.donut {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.donut::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  background: var(--cartao);
+}
+
+.donut span {
+  position: relative;
+  z-index: 1;
+  font-family: "Epilogue", "Inter", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.progresso {
+  flex: 1 1 260px;
+}
+
+.progresso > span {
+  display: block;
+  color: var(--texto2);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progresso p {
+  margin: 0.7rem 0 0;
+  color: var(--texto2);
+  font-size: 0.9rem;
+}
+
+.barra {
+  height: 10px;
+  margin-top: 0.6rem;
+  border-radius: 999px;
+  background: var(--borda);
+  overflow: hidden;
+}
+
+.barra-preenchida {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--acento);
 }
 
 .botao {
