@@ -11,6 +11,6 @@ public class WebConfig implements WebMvcConfigurer {
     public WebConfig(SessaoInterceptor interceptor){this.interceptor=interceptor;}
     @Override public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(interceptor).addPathPatterns("/**")
-                .excludePathPatterns("/login","/logout","/css/**","/js/**","/images/**","/error","/favicon.ico");
+                .excludePathPatterns("/login","/logout","/acesso-negado.html","/css/**","/js/**","/images/**","/error","/favicon.ico");
     }
 }
