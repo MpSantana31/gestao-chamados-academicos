@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Cadastrar chamado')}"></head>
+<body class="app sem-aside">
+
+<header th:replace="~{fragments/layout :: topbar('novo')}"></header>
+
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <nav class="caminho" aria-label="localização">chamados / novo</nav>
+    <h1>Cadastrar novo chamado</h1>
+
+    <section>
+        <h2>Dados do chamado</h2>
+        <form class="formulario" th:action="@{/chamados/salvar}" th:object="${chamadoCadastroDTO}" method="post">
+            <div class="form-grid">
+                <label class="campo-full">Título
+                    <input type="text" th:field="*{titulo}" required>
+                </label>
+                <label class="campo-full">Descrição
+                    <textarea th:field="*{descricao}" rows="5" required></textarea>
+                </label>
+                <label>Categoria
+                    <select th:field="*{categoria}" required>
+                        <option value="">Selecione</option>
+                        <option value="Suporte técnico">Suporte técnico</option>
+                        <option value="Documentos">Documentos</option>
+                        <option value="Matrícula">Matrícula</option>
+                        <option value="Atendimento acadêmico">Atendimento acadêmico</option>
+                    </select>
+                </label>
+            </div>
+            <div class="acoes-form">
+                <button type="submit">Salvar chamado</button>
+                <a class="btn-ghost" th:href="@{/chamados}">Voltar para a lista</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

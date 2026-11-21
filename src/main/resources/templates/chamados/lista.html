@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Chamados')}"></head>
+<body class="app">
+
+<header th:replace="~{fragments/layout :: topbar('chamados')}"></header>
+
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <nav class="caminho" aria-label="localização">chamados</nav>
+    <h1>Chamados acadêmicos</h1>
+
+    <section>
+        <h2>Consulta de chamados</h2>
+        <form method="get" action="/chamados">
+            <div class="filtros">
+                <label>Busca no título/descrição
+                    <input name="busca" th:value="${filtro.busca}">
+                </label>
+                <label>Status
+                    <select name="status">
+                        <option value="">Todos</option>
+                        <option value="ABERTO" th:selected="${filtro.status == 'ABERTO'}">ABERTO</option>
+                        <option value="EM_ANALISE" th:selected="${filtro.status == 'EM_ANALISE'}">EM_ANALISE</option>
+                        <option value="CONCLUIDO" th:selected="${filtro.status == 'CONCLUIDO'}">CONCLUIDO</option>
+                        <option value="CANCELADO" th:selected="${filtro.status == 'CANCELADO'}">CANCELADO</option>
+                    </select>
+                </label>
+                <label>Categoria
+                    <select name="categoria">
+                        <option value="">Todas</option>
+                        <option value="Suporte técnico" th:selected="${filtro.categoria == 'Suporte técnico'}">Suporte técnico</option>
+                        <option value="Documentos" th:selected="${filtro.categoria == 'Documentos'}">Documentos</option>
+                        <option value="Matrícula" th:selected="${filtro.categoria == 'Matrícula'}">Matrícula</option>
+                        <option value="Atendimento acadêmico" th:selected="${filtro.categoria == 'Atendimento acadêmico'}">Atendimento acadêmico</option>
+                    </select>
+                </label>
+                <label>Prioridade
+                    <select name="prioridade">
+                        <option value="">Todas</option>
+                        <option value="BAIXA" th:selected="${filtro.prioridade == 'BAIXA'}">BAIXA</option>
+                        <option value="MEDIA" th:selected="${filtro.prioridade == 'MEDIA'}">MEDIA</option>
+                        <option value="ALTA" th:selected="${filtro.prioridade == 'ALTA'}">ALTA</option>
+                        <option value="URGENTE" th:selected="${filtro.prioridade == 'URGENTE'}">URGENTE</option>
+                    </select>
+                </label>
+                <label>De
+                    <input type="date" name="inicio" th:value="${filtro.inicio}">
+                </label>
+                <label>Até
+                    <input type="date" name="fim" th:value="${filtro.fim}">
+                </label>
+                <div class="acoes-form">
+                    <button type="submit">Aplicar filtros</button>
+                    <a th:href="@{/chamados}">Limpar</a>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <section class="tabela">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Categoria</th>
+                <th>Status</th>
+                <th>Prioridade</th>
+                <th>Responsável</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="chamado : ${chamados}">
+                <td class="mono" th:text="${chamado.id}"></td>
+                <td th:text="${chamado.titulo}"></td>
+                <td th:text="${chamado.categoria}"></td>
+                <td>
+                    <span class="badge" th:classappend="|status-${chamado.status}|" th:text="${chamado.status}"></span>
+                </td>
+                <td>
+                    <span class="badge" th:classappend="|prioridade-${chamado.prioridade}|" th:text="${chamado.prioridade}"></span>
+                </td>
+                <td th:text="${chamado.responsavel}"></td>
+                <td class="acoes">
+                    <a th:href="@{/chamados/detalhes/{id}(id=${chamado.id})}">Detalhes</a>
+                    <a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar</a>
+                    <a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Status</a>
+                    <form th:action="@{/chamados/excluir/{id}(id=${chamado.id})}" method="post" onsubmit="return confirm('Excluir este chamado?');">
+                        <button class="btn-link" type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(chamados)}">Nenhum chamado encontrado para os filtros informados.</p>
+    </section>
+</main>
+
+<aside>
+    <section>
+        <h2>Resumo da consulta</h2>
+        <div class="resumo-linha">
+            <span>Registros exibidos</span>
+            <strong th:text="${#lists.size(chamados)}">0</strong>
+        </div>
+        <div class="resumo-linha">
+            <span>Status acompanhados</span>
+            <strong>4</strong>
+        </div>
+    </section>
+    <section>
+        <h2>Ações rápidas</h2>
+        <ul>
+            <li><a th:href="@{/chamados/novo}">Cadastrar novo chamado</a></li>
+            <li><a th:href="@{/indicadores}">Ver indicadores</a></li>
+            <li><a th:href="@{/relatorios}">Gerar relatório</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>Legenda de status</h2>
+        <ul>
+            <li><span class="badge status-ABERTO">ABERTO</span></li>
+            <li><span class="badge status-EM_ANALISE">EM_ANALISE</span></li>
+            <li><span class="badge status-CONCLUIDO">CONCLUIDO</span></li>
+            <li><span class="badge status-CANCELADO">CANCELADO</span></li>
+        </ul>
+    </section>
+</aside>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

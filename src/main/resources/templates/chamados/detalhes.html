@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Detalhes do chamado')}"></head>
+<body class="app">
+
+<header th:replace="~{fragments/layout :: topbar('chamados')}"></header>
+
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <nav class="caminho" aria-label="localização">chamados / detalhes</nav>
+    <div class="detalhes-titulo">
+        <h1 th:text="${chamado.titulo}">Detalhes do chamado</h1>
+        <span class="badge" th:classappend="|status-${chamado.status}|" th:text="${chamado.status}"></span>
+        <span class="badge" th:classappend="|prioridade-${chamado.prioridade}|" th:text="${chamado.prioridade}"></span>
+    </div>
+
+    <section>
+        <h2>Informações do chamado</h2>
+        <div class="campos">
+            <div class="campo"><span>ID</span><strong class="mono" th:text="${chamado.id}">1</strong></div>
+            <div class="campo"><span>Categoria</span><strong th:text="${chamado.categoria}">Categoria</strong></div>
+            <div class="campo"><span>Responsável</span><strong th:text="${chamado.responsavel}">Responsável</strong></div>
+            <div class="campo"><span>Data de abertura</span><strong class="mono" th:text="${chamado.dataAbertura}">Data</strong></div>
+            <div class="campo"><span>Data de atualização</span><strong class="mono" th:text="${chamado.dataAtualizacao}">Data</strong></div>
+            <div class="campo campo-full"><span>Descrição</span><strong th:text="${chamado.descricao}">Descrição</strong></div>
+            <div class="campo campo-full"><span>Observação de atendimento</span><strong th:text="${chamado.observacaoAtendimento}">Observação</strong></div>
+        </div>
+    </section>
+</main>
+
+<aside>
+    <section>
+        <h2>Ações rápidas</h2>
+        <ul>
+            <li><a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Atualizar status</a></li>
+            <li><a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar chamado</a></li>
+            <li><a th:href="@{/chamados}">Voltar para a lista</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>Sobre o registro</h2>
+        <p>Os dados acima refletem o estado atual do chamado persistido no banco H2.</p>
+    </section>
+</aside>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Atualizar status</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<h1>Atualizar status do chamado</h1>
+
+<p>
+    <a href="/chamados">Voltar para a lista</a>
+</p>
+
+<div class="card">
+    <p><strong>Título:</strong> <span th:text="${chamado.titulo}">Título</span></p>
+    <p><strong>Categoria:</strong> <span th:text="${chamado.categoria}">Categoria</span></p>
+    <p><strong>Responsável:</strong> <span th:text="${chamado.responsavel}">Responsável</span></p>
+</div>
+
+<!--
+    Este formulário usa ChamadoAtualizacaoStatusDTO.
+    O DTO permite alterar apenas status e observação.
+-->
+<form th:action="@{/chamados/status/atualizar}" th:object="${statusDTO}" method="post">
+
+    <input type="hidden" th:field="*{id}">
+
+    <p>
+        <label>Status:</label><br>
+        <select th:field="*{status}" required>
+            <option value="ABERTO">ABERTO</option>
+            <option value="EM_ANALISE">EM_ANALISE</option>
+            <option value="CONCLUIDO">CONCLUIDO</option>
+            <option value="CANCELADO">CANCELADO</option>
+        </select>
+    </p>
+
+    <p>
+        <label>Observação de atendimento:</label><br>
+        <textarea th:field="*{observacaoAtendimento}" rows="5"></textarea>
+    </p>
+
+    <button type="submit">Atualizar status</button>
+
+</form>
+
+</body>
+</html>

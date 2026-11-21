@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Entrar')}"></head>
+<body class="auth">
+
+<main class="login card">
+    <nav class="caminho">acesso didático</nav>
+    <h1>Gestão de Chamados Acadêmicos</h1>
+    <p class="subtitulo">Acesso demonstrativo — LP2 / IFSP</p>
+
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <form action="/login" method="post">
+        <label for="usuario">Usuário</label>
+        <input id="usuario" name="usuario" autocomplete="username" required>
+
+        <label for="senha">Senha</label>
+        <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    <p class="ajuda">Demonstração: admin / admin123</p>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

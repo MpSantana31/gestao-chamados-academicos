@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Gestão de Chamados Acadêmicos — LP2 / IFSP">
+    <title th:text="${titulo} + ' · Gestão de Chamados'">Gestão de Chamados</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:inline="none">
+    (function () {
+        var salvo = localStorage.getItem('tema');
+        document.documentElement.setAttribute('data-theme', salvo === 'claro' ? 'claro' : 'escuro');
+        document.addEventListener('DOMContentLoaded', function () {
+            var botao = document.getElementById('theme-toggle');
+            if (!botao) return;
+            function rotulo() {
+                botao.textContent = document.documentElement.getAttribute('data-theme') === 'claro' ? 'tema: escuro' : 'tema: claro';
+            }
+            rotulo();
+            botao.addEventListener('click', function () {
+                var proximo = document.documentElement.getAttribute('data-theme') === 'claro' ? 'escuro' : 'claro';
+                document.documentElement.setAttribute('data-theme', proximo);
+                localStorage.setItem('tema', proximo);
+                rotulo();
+            });
+        });
+    })();
+    </script>
+</head>
+<body>
+
+<header th:fragment="topbar(ativo)">
+    <a class="brand" th:href="@{/chamados}">Chamados Acadêmicos</a>
+    <nav>
+        <a th:href="@{/chamados}" th:attr="aria-current=${ativo == 'chamados'} ? 'page' : null">chamados</a>
+        <a th:href="@{/chamados/novo}" th:attr="aria-current=${ativo == 'novo'} ? 'page' : null">novo chamado</a>
+        <a th:href="@{/indicadores}" th:attr="aria-current=${ativo == 'indicadores'} ? 'page' : null">indicadores</a>
+        <a th:href="@{/relatorios}" th:attr="aria-current=${ativo == 'relatorios'} ? 'page' : null">relatórios</a>
+        <button type="button" id="theme-toggle">tema: claro</button>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn-sair">sair</button>
+        </form>
+    </nav>
+</header>
+
+<div th:fragment="mensagens">
+    <p class="mensagem-sucesso" th:if="${mensagemSucesso}" th:text="${mensagemSucesso}"></p>
+    <p class="mensagem-erro" th:if="${mensagemErro}" th:text="${mensagemErro}"></p>
+    <p class="mensagem-erro" th:if="${erro}" th:text="${erro}"></p>
+</div>
+
+<footer th:fragment="footer">
+    <p>
+        <span>LP2 · IFSP · 2026</span>
+        <span class="sep">—</span>
+        <span>Sistema de Gestão de Chamados Acadêmicos</span>
+    </p>
+</footer>
+
+</body>
+</html>
