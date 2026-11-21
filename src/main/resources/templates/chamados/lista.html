@@ -3,13 +3,13 @@
 <head th:replace="~{fragments/layout :: head('Chamados')}"></head>
 <body class="app">
 
-<header th:replace="~{fragments/layout :: topbar('chamados')}"></header>
+<header th:replace="~{fragments/layout :: topbar('chamados', ${admin}, ${usuario})}"></header>
 
 <main>
     <div th:replace="~{fragments/layout :: mensagens}"></div>
 
     <nav class="caminho" aria-label="localização">chamados</nav>
-    <h1>Chamados acadêmicos</h1>
+    <h1 th:text="${admin} ? 'Todos os chamados' : 'Meus chamados'">Chamados acadêmicos</h1>
 
     <section>
         <h2>Consulta de chamados</h2>
@@ -86,11 +86,13 @@
                 <td th:text="${chamado.responsavel}"></td>
                 <td class="acoes">
                     <a th:href="@{/chamados/detalhes/{id}(id=${chamado.id})}">Detalhes</a>
-                    <a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar</a>
-                    <a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Status</a>
-                    <form th:action="@{/chamados/excluir/{id}(id=${chamado.id})}" method="post" onsubmit="return confirm('Excluir este chamado?');">
-                        <button class="btn-link" type="submit">Excluir</button>
-                    </form>
+                    <span th:if="${admin}">
+                        <a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar</a>
+                        <a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Status</a>
+                        <form th:action="@{/chamados/excluir/{id}(id=${chamado.id})}" method="post" onsubmit="return confirm('Excluir este chamado?');">
+                            <button class="btn-link" type="submit">Excluir</button>
+                        </form>
+                    </span>
                 </td>
             </tr>
             </tbody>

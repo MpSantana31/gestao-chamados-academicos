@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/layout :: head('Cadastrar chamado')}"></head>
 <body class="app sem-aside">
 
-<header th:replace="~{fragments/layout :: topbar('novo')}"></header>
+<header th:replace="~{fragments/layout :: topbar('novo', ${admin}, ${usuario})}"></header>
 
 <main>
     <div th:replace="~{fragments/layout :: mensagens}"></div>

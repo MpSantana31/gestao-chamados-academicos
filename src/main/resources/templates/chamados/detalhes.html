@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/layout :: head('Detalhes do chamado')}"></head>
 <body class="app">
 
-<header th:replace="~{fragments/layout :: topbar('chamados')}"></header>
+<header th:replace="~{fragments/layout :: topbar('chamados', ${admin}, ${usuario})}"></header>
 
 <main>
     <div th:replace="~{fragments/layout :: mensagens}"></div>
@@ -33,8 +33,8 @@
     <section>
         <h2>Ações rápidas</h2>
         <ul>
-            <li><a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Atualizar status</a></li>
-            <li><a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar chamado</a></li>
+            <li th:if="${admin}"><a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Atualizar status</a></li>
+            <li th:if="${admin}"><a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar chamado</a></li>
             <li><a th:href="@{/chamados}">Voltar para a lista</a></li>
         </ul>
     </section>

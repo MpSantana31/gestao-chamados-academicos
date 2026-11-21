@@ -1,50 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Atualizar status</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
+<head th:replace="~{fragments/layout :: head('Atualizar status')}"></head>
+<body class="app sem-aside">
 
-<h1>Atualizar status do chamado</h1>
+<header th:replace="~{fragments/layout :: topbar('chamados', ${admin}, ${usuario})}"></header>
 
-<p>
-    <a href="/chamados">Voltar para a lista</a>
-</p>
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
 
-<div class="card">
-    <p><strong>Título:</strong> <span th:text="${chamado.titulo}">Título</span></p>
-    <p><strong>Categoria:</strong> <span th:text="${chamado.categoria}">Categoria</span></p>
-    <p><strong>Responsável:</strong> <span th:text="${chamado.responsavel}">Responsável</span></p>
-</div>
+    <nav class="caminho" aria-label="localização">chamados / status</nav>
+    <h1>Atualizar status do chamado</h1>
 
-<!--
-    Este formulário usa ChamadoAtualizacaoStatusDTO.
-    O DTO permite alterar apenas status e observação.
--->
-<form th:action="@{/chamados/status/atualizar}" th:object="${statusDTO}" method="post">
+    <section>
+        <h2>Chamado selecionado</h2>
+        <div class="campos">
+            <div class="campo campo-full"><span>Título</span><strong th:text="${chamado.titulo}">Título</strong></div>
+            <div class="campo"><span>Categoria</span><strong th:text="${chamado.categoria}">Categoria</strong></div>
+            <div class="campo"><span>Responsável</span><strong th:text="${chamado.responsavel}">Responsável</strong></div>
+        </div>
+    </section>
 
-    <input type="hidden" th:field="*{id}">
+    <section>
+        <h2>Atendimento</h2>
+        <form class="formulario" th:action="@{/chamados/status/atualizar}" th:object="${statusDTO}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="form-grid">
+                <label>Status
+                    <select th:field="*{status}" required>
+                        <option value="ABERTO">ABERTO</option>
+                        <option value="EM_ANALISE">EM_ANALISE</option>
+                        <option value="CONCLUIDO">CONCLUIDO</option>
+                        <option value="CANCELADO">CANCELADO</option>
+                    </select>
+                </label>
+                <label class="campo-full">Observação de atendimento
+                    <textarea th:field="*{observacaoAtendimento}" rows="5"></textarea>
+                </label>
+            </div>
+            <div class="acoes-form">
+                <button type="submit">Atualizar status</button>
+                <a class="btn-ghost" th:href="@{/chamados}">Voltar para a lista</a>
+            </div>
+        </form>
+    </section>
+</main>
 
-    <p>
-        <label>Status:</label><br>
-        <select th:field="*{status}" required>
-            <option value="ABERTO">ABERTO</option>
-            <option value="EM_ANALISE">EM_ANALISE</option>
-            <option value="CONCLUIDO">CONCLUIDO</option>
-            <option value="CANCELADO">CANCELADO</option>
-        </select>
-    </p>
-
-    <p>
-        <label>Observação de atendimento:</label><br>
-        <textarea th:field="*{observacaoAtendimento}" rows="5"></textarea>
-    </p>
-
-    <button type="submit">Atualizar status</button>
-
-</form>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 
 </body>
 </html>

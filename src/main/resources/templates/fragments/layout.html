@@ -32,13 +32,15 @@
 </head>
 <body>
 
-<header th:fragment="topbar(ativo)">
+<header th:fragment="topbar(ativo, admin, usuario)">
     <a class="brand" th:href="@{/chamados}">Chamados Acadêmicos</a>
     <nav>
         <a th:href="@{/chamados}" th:attr="aria-current=${ativo == 'chamados'} ? 'page' : null">chamados</a>
         <a th:href="@{/chamados/novo}" th:attr="aria-current=${ativo == 'novo'} ? 'page' : null">novo chamado</a>
-        <a th:href="@{/indicadores}" th:attr="aria-current=${ativo == 'indicadores'} ? 'page' : null">indicadores</a>
-        <a th:href="@{/relatorios}" th:attr="aria-current=${ativo == 'relatorios'} ? 'page' : null">relatórios</a>
+        <a th:if="${admin}" th:href="@{/indicadores}" th:attr="aria-current=${ativo == 'indicadores'} ? 'page' : null">indicadores</a>
+        <a th:if="${admin}" th:href="@{/relatorios}" th:attr="aria-current=${ativo == 'relatorios'} ? 'page' : null">relatórios</a>
+        <a th:if="${admin}" th:href="@{/usuarios}" th:attr="aria-current=${ativo == 'usuarios'} ? 'page' : null">usuários</a>
+        <span class="usuario" th:text="${usuario}">usuário</span>
         <button type="button" id="theme-toggle">tema: claro</button>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn-sair">sair</button>

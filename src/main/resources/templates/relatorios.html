@@ -1,15 +1,147 @@
-<!DOCTYPE html><html lang="pt-br" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><title>Relatórios</title><link rel="stylesheet" href="/css/style.css"></head><body><header><h1>Sistema de Gestão de Chamados Acadêmicos</h1><nav><a href="/chamados">Chamados</a><a href="/chamados/novo">Novo chamado</a><a href="/indicadores">Indicadores</a><a href="/relatorios">Relatórios</a><form action="/logout" method="post"><button>Sair</button></form></nav></header><h2>Relatórios e exportações</h2>
-<form method="get" action="/relatorios"><div class="filtros card"><label>Busca no título/descrição<input name="busca" th:value="${filtro.busca}"></label>
-<label>Status<select name="status"><option value="">Todos</option><option value="ABERTO" th:selected="${filtro.status == 'ABERTO'}">ABERTO</option><option value="EM_ANALISE" th:selected="${filtro.status == 'EM_ANALISE'}">EM_ANALISE</option><option value="CONCLUIDO" th:selected="${filtro.status == 'CONCLUIDO'}">CONCLUIDO</option><option value="CANCELADO" th:selected="${filtro.status == 'CANCELADO'}">CANCELADO</option></select></label>
-<label>Categoria<select name="categoria"><option value="">Todas</option><option value="Suporte técnico" th:selected="${filtro.categoria == 'Suporte técnico'}">Suporte técnico</option><option value="Documentos" th:selected="${filtro.categoria == 'Documentos'}">Documentos</option><option value="Matrícula" th:selected="${filtro.categoria == 'Matrícula'}">Matrícula</option><option value="Atendimento acadêmico" th:selected="${filtro.categoria == 'Atendimento acadêmico'}">Atendimento acadêmico</option></select></label>
-<label>Prioridade<select name="prioridade"><option value="">Todas</option><option value="BAIXA" th:selected="${filtro.prioridade == 'BAIXA'}">BAIXA</option><option value="MEDIA" th:selected="${filtro.prioridade == 'MEDIA'}">MEDIA</option><option value="ALTA" th:selected="${filtro.prioridade == 'ALTA'}">ALTA</option><option value="URGENTE" th:selected="${filtro.prioridade == 'URGENTE'}">URGENTE</option></select></label>
-<label>De<input type="date" name="inicio" th:value="${filtro.inicio}"></label><label>Até<input type="date" name="fim" th:value="${filtro.fim}"></label>
-<button type="submit">Aplicar filtros</button><a href="/chamados">Limpar</a></div></form>
-<section class="painel"><div class="card">Registros filtrados: <b th:text="${indicadores.total}"></b></div><div class="card">Concluídos: <b th:text="${indicadores.concluidos}"></b></div><div class="card">Em análise: <b th:text="${indicadores.emAnalise}"></b></div></section>
-<div class="card"><strong>Exportar o recorte filtrado</strong><p>Os formatos abaixo usam os mesmos critérios de busca aplicados nesta página.</p>
-<a class="botao" id="csv" href="#">Baixar CSV</a> <a class="botao" id="excel" href="#">Baixar Excel</a> <a class="botao" id="pdf" href="#">Baixar PDF</a></div>
-<table><thead><tr><th>ID</th><th>Título</th><th>Categoria</th><th>Status</th><th>Prioridade</th><th>Responsável</th><th>Ações</th></tr></thead>
-<tbody><tr th:each="chamado : ${chamados}"><td th:text="${chamado.id}"></td><td th:text="${chamado.titulo}"></td><td th:text="${chamado.categoria}"></td><td th:text="${chamado.status}"></td><td th:text="${chamado.prioridade}"></td><td th:text="${chamado.responsavel}"></td>
-<td class="acoes"><a th:href="@{/chamados/detalhes/{id}(id=${chamado.id})}">Detalhes</a> <a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar</a> <a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Status</a>
-<form th:action="@{/chamados/excluir/{id}(id=${chamado.id})}" method="post" onsubmit="return confirm('Excluir este chamado?');"><button class="btn-link">Excluir</button></form></td></tr></tbody></table>
-<p th:if="${#lists.isEmpty(chamados)}">Nenhum chamado encontrado para os filtros informados.</p><script>const parametros = new URLSearchParams(location.search).toString();for (const tipo of ['csv','excel','pdf']) document.getElementById(tipo).href='/relatorios/exportar/'+tipo+(parametros?'?'+parametros:'');</script></body></html>
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Relatórios')}"></head>
+<body class="app">
+
+<header th:replace="~{fragments/layout :: topbar('relatorios', ${admin}, ${usuario})}"></header>
+
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <nav class="caminho" aria-label="localização">admin / relatórios</nav>
+    <h1>Relatórios e exportações</h1>
+
+    <section>
+        <h2>Filtros</h2>
+        <form method="get" action="/relatorios">
+            <div class="filtros">
+                <label>Busca no título/descrição
+                    <input name="busca" th:value="${filtro.busca}">
+                </label>
+                <label>Status
+                    <select name="status">
+                        <option value="">Todos</option>
+                        <option value="ABERTO" th:selected="${filtro.status == 'ABERTO'}">ABERTO</option>
+                        <option value="EM_ANALISE" th:selected="${filtro.status == 'EM_ANALISE'}">EM_ANALISE</option>
+                        <option value="CONCLUIDO" th:selected="${filtro.status == 'CONCLUIDO'}">CONCLUIDO</option>
+                        <option value="CANCELADO" th:selected="${filtro.status == 'CANCELADO'}">CANCELADO</option>
+                    </select>
+                </label>
+                <label>Categoria
+                    <select name="categoria">
+                        <option value="">Todas</option>
+                        <option value="Suporte técnico" th:selected="${filtro.categoria == 'Suporte técnico'}">Suporte técnico</option>
+                        <option value="Documentos" th:selected="${filtro.categoria == 'Documentos'}">Documentos</option>
+                        <option value="Matrícula" th:selected="${filtro.categoria == 'Matrícula'}">Matrícula</option>
+                        <option value="Atendimento acadêmico" th:selected="${filtro.categoria == 'Atendimento acadêmico'}">Atendimento acadêmico</option>
+                    </select>
+                </label>
+                <label>Prioridade
+                    <select name="prioridade">
+                        <option value="">Todas</option>
+                        <option value="BAIXA" th:selected="${filtro.prioridade == 'BAIXA'}">BAIXA</option>
+                        <option value="MEDIA" th:selected="${filtro.prioridade == 'MEDIA'}">MEDIA</option>
+                        <option value="ALTA" th:selected="${filtro.prioridade == 'ALTA'}">ALTA</option>
+                        <option value="URGENTE" th:selected="${filtro.prioridade == 'URGENTE'}">URGENTE</option>
+                    </select>
+                </label>
+                <label>De
+                    <input type="date" name="inicio" th:value="${filtro.inicio}">
+                </label>
+                <label>Até
+                    <input type="date" name="fim" th:value="${filtro.fim}">
+                </label>
+                <div class="acoes-form">
+                    <button type="submit">Aplicar filtros</button>
+                    <a class="btn-ghost" th:href="@{/relatorios}">Limpar</a>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h2>Resumo do recorte</h2>
+        <div class="painel">
+            <article class="card kpi">
+                <span>Registros filtrados</span>
+                <strong th:text="${indicadores.total}">0</strong>
+            </article>
+            <article class="card kpi">
+                <span>Concluídos</span>
+                <strong th:text="${indicadores.concluidos}">0</strong>
+            </article>
+            <article class="card kpi">
+                <span>Em análise</span>
+                <strong th:text="${indicadores.emAnalise}">0</strong>
+            </article>
+        </div>
+    </section>
+
+    <section>
+        <h2>Exportar o recorte filtrado</h2>
+        <p>Os arquivos abaixo usam exatamente os mesmos filtros aplicados nesta consulta.</p>
+        <div class="acoes-form">
+            <a class="botao" th:href="@{/relatorios/exportar/csv(busca=${filtro.busca},status=${filtro.status},categoria=${filtro.categoria},prioridade=${filtro.prioridade},inicio=${filtro.inicio},fim=${filtro.fim})}">Baixar CSV</a>
+            <a class="botao" th:href="@{/relatorios/exportar/pdf(busca=${filtro.busca},status=${filtro.status},categoria=${filtro.categoria},prioridade=${filtro.prioridade},inicio=${filtro.inicio},fim=${filtro.fim})}">Baixar PDF</a>
+            <a class="botao" th:href="@{/relatorios/exportar/excel(busca=${filtro.busca},status=${filtro.status},categoria=${filtro.categoria},prioridade=${filtro.prioridade},inicio=${filtro.inicio},fim=${filtro.fim})}">Baixar Excel</a>
+        </div>
+    </section>
+
+    <section class="tabela">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Categoria</th>
+                <th>Status</th>
+                <th>Prioridade</th>
+                <th>Responsável</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="chamado : ${chamados}">
+                <td class="mono" th:text="${chamado.id}"></td>
+                <td th:text="${chamado.titulo}"></td>
+                <td th:text="${chamado.categoria}"></td>
+                <td>
+                    <span class="badge" th:classappend="|status-${chamado.status}|" th:text="${chamado.status}"></span>
+                </td>
+                <td>
+                    <span class="badge" th:classappend="|prioridade-${chamado.prioridade}|" th:text="${chamado.prioridade}"></span>
+                </td>
+                <td th:text="${chamado.responsavel}"></td>
+                <td class="acoes">
+                    <a th:href="@{/chamados/detalhes/{id}(id=${chamado.id})}">Detalhes</a>
+                    <a th:href="@{/chamados/editar/{id}(id=${chamado.id})}">Editar</a>
+                    <a th:href="@{/chamados/status/{id}(id=${chamado.id})}">Status</a>
+                    <form th:action="@{/chamados/excluir/{id}(id=${chamado.id})}" method="post" onsubmit="return confirm('Excluir este chamado?');">
+                        <button class="btn-link" type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(chamados)}">Nenhum chamado encontrado para os filtros informados.</p>
+    </section>
+</main>
+
+<aside>
+    <section>
+        <h2>Ações rápidas</h2>
+        <ul>
+            <li><a th:href="@{/indicadores}">Ver indicadores</a></li>
+            <li><a th:href="@{/chamados}">Voltar aos chamados</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>Sobre a exportação</h2>
+        <p>CSV e PDF são gerados a partir dos registros filtrados, sem alterar o banco de dados.</p>
+    </section>
+</aside>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

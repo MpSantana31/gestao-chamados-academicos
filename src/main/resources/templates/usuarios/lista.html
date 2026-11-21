@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Usuários')}"></head>
+<body class="app">
+
+<header th:replace="~{fragments/layout :: topbar('usuarios', ${admin}, ${usuario})}"></header>
+
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <nav class="caminho" aria-label="localização">admin / usuários</nav>
+    <h1>Usuários do sistema</h1>
+
+    <section>
+        <h2>Contas cadastradas</h2>
+        <p><a th:href="@{/usuarios/novo}">Cadastrar novo usuário</a></p>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Login</th>
+                <th>Nome</th>
+                <th>Papel</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${usuarios}">
+                <td class="mono" th:text="${u.id}"></td>
+                <td th:text="${u.login}"></td>
+                <td th:text="${u.nome}"></td>
+                <td>
+                    <span class="badge" th:text="${u.papel}"></span>
+                </td>
+                <td class="acoes">
+                    <a th:href="@{/usuarios/editar/{id}(id=${u.id})}">Editar</a>
+                    <form th:action="@{/usuarios/excluir/{id}(id=${u.id})}" method="post" onsubmit="return confirm('Excluir este usuário?');">
+                        <button class="btn-link" type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

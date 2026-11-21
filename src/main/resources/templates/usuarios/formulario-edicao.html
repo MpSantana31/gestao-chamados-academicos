@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Editar usuário')}"></head>
+<body class="app sem-aside">
+
+<header th:replace="~{fragments/layout :: topbar('usuarios', ${admin}, ${usuario})}"></header>
+
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <nav class="caminho" aria-label="localização">admin / usuários / editar</nav>
+    <h1>Editar usuário</h1>
+
+    <section>
+        <h2>Dados da conta</h2>
+        <form class="formulario" th:action="@{/usuarios/atualizar}" th:object="${usuarioEdicaoDTO}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="form-grid">
+                <label>Login
+                    <input type="text" th:field="*{login}" required>
+                </label>
+                <label>Nome
+                    <input type="text" th:field="*{nome}" required>
+                </label>
+                <label>Senha (em branco mantém a atual)
+                    <input type="text" th:field="*{senha}">
+                </label>
+                <label>Papel
+                    <select th:field="*{papel}" required>
+                        <option value="USUARIO">USUARIO</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </label>
+            </div>
+            <p class="ajuda">A senha é armazenada em texto simples apenas para demonstração.</p>
+            <div class="acoes-form">
+                <button type="submit">Atualizar usuário</button>
+                <a class="btn-ghost" th:href="@{/usuarios}">Voltar</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

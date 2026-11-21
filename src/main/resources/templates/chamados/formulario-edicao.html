@@ -1,78 +1,68 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar chamado</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
+<head th:replace="~{fragments/layout :: head('Editar chamado')}"></head>
+<body class="app sem-aside">
 
-<h1>Editar chamado</h1>
+<header th:replace="~{fragments/layout :: topbar('chamados', ${admin}, ${usuario})}"></header>
 
-<p>
-    <a href="/chamados">Voltar para a lista</a>
-</p>
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
 
-<p class="mensagem-erro" th:if="${mensagemErro}" th:text="${mensagemErro}"></p>
+    <nav class="caminho" aria-label="localização">chamados / editar</nav>
+    <h1>Editar chamado</h1>
 
-<form th:action="@{/chamados/atualizar}" th:object="${chamado}" method="post">
+    <section>
+        <h2>Dados do chamado</h2>
+        <form class="formulario" th:action="@{/chamados/atualizar}" th:object="${chamado}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{dataAbertura}">
+            <div class="form-grid">
+                <label class="campo-full">Título
+                    <input type="text" th:field="*{titulo}" required>
+                </label>
+                <label class="campo-full">Descrição
+                    <textarea th:field="*{descricao}" rows="5" required></textarea>
+                </label>
+                <label>Categoria
+                    <select th:field="*{categoria}" required>
+                        <option value="Suporte técnico">Suporte técnico</option>
+                        <option value="Documentos">Documentos</option>
+                        <option value="Matrícula">Matrícula</option>
+                        <option value="Atendimento acadêmico">Atendimento acadêmico</option>
+                    </select>
+                </label>
+                <label>Status
+                    <select th:field="*{status}" required>
+                        <option value="ABERTO">ABERTO</option>
+                        <option value="EM_ANALISE">EM_ANALISE</option>
+                        <option value="CONCLUIDO">CONCLUIDO</option>
+                        <option value="CANCELADO">CANCELADO</option>
+                    </select>
+                </label>
+                <label>Prioridade
+                    <select th:field="*{prioridade}" required>
+                        <option value="BAIXA">BAIXA</option>
+                        <option value="MEDIA">MEDIA</option>
+                        <option value="ALTA">ALTA</option>
+                        <option value="URGENTE">URGENTE</option>
+                    </select>
+                </label>
+                <label>Responsável
+                    <input type="text" th:field="*{responsavel}" required>
+                </label>
+                <label class="campo-full">Observação de atendimento
+                    <textarea th:field="*{observacaoAtendimento}" rows="4"></textarea>
+                </label>
+            </div>
+            <div class="acoes-form">
+                <button type="submit">Atualizar chamado</button>
+                <a class="btn-ghost" th:href="@{/chamados}">Voltar para a lista</a>
+            </div>
+        </form>
+    </section>
+</main>
 
-    <input type="hidden" th:field="*{id}">
-    <input type="hidden" th:field="*{dataAbertura}">
-
-    <p>
-        <label>Título:</label><br>
-        <input type="text" th:field="*{titulo}" required>
-    </p>
-
-    <p>
-        <label>Descrição:</label><br>
-        <textarea th:field="*{descricao}" rows="5" required></textarea>
-    </p>
-
-    <p>
-        <label>Categoria:</label><br>
-        <select th:field="*{categoria}" required>
-            <option value="Suporte técnico">Suporte técnico</option>
-            <option value="Documentos">Documentos</option>
-            <option value="Matrícula">Matrícula</option>
-            <option value="Atendimento acadêmico">Atendimento acadêmico</option>
-        </select>
-    </p>
-
-    <p>
-        <label>Status:</label><br>
-        <select th:field="*{status}" required>
-            <option value="ABERTO">ABERTO</option>
-            <option value="EM_ANALISE">EM_ANALISE</option>
-            <option value="CONCLUIDO">CONCLUIDO</option>
-            <option value="CANCELADO">CANCELADO</option>
-        </select>
-    </p>
-
-    <p>
-        <label>Prioridade:</label><br>
-        <select th:field="*{prioridade}" required>
-            <option value="BAIXA">BAIXA</option>
-            <option value="MEDIA">MEDIA</option>
-            <option value="ALTA">ALTA</option>
-            <option value="URGENTE">URGENTE</option>
-        </select>
-    </p>
-
-    <p>
-        <label>Responsável:</label><br>
-        <input type="text" th:field="*{responsavel}" required>
-    </p>
-
-    <p>
-        <label>Observação de atendimento:</label><br>
-        <textarea th:field="*{observacaoAtendimento}" rows="4"></textarea>
-    </p>
-
-    <button type="submit">Atualizar</button>
-
-</form>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 
 </body>
 </html>

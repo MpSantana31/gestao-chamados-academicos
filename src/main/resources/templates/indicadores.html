@@ -1,4 +1,75 @@
-<!DOCTYPE html><html lang="pt-br" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><title>Indicadores</title><link rel="stylesheet" href="/css/style.css"></head><body>
-<header><h1>Indicadores dos Chamados</h1><nav><a href="/chamados">Chamados</a><a href="/relatorios">Relatórios</a><form action="/logout" method="post"><button>Sair</button></form></nav></header>
-<section class="painel"><article class="card"><strong>Total</strong><p th:text="${indicadores.total}"></p></article><article class="card"><strong>Abertos</strong><p th:text="${indicadores.abertos}"></p></article><article class="card"><strong>Em análise</strong><p th:text="${indicadores.emAnalise}"></p></article><article class="card"><strong>Concluídos</strong><p th:text="${indicadores.concluidos}"></p></article><article class="card"><strong>Cancelados</strong><p th:text="${indicadores.cancelados}"></p></article><article class="card"><strong>Prioridade alta/urgente</strong><p th:text="${indicadores.altaPrioridade}"></p></article></section>
-<div class="card"><strong>Percentual concluído:</strong> <span th:text="${#numbers.formatDecimal(indicadores.percentualConcluido,1,1)} + '%'">0%</span></div></body></html>
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Indicadores')}"></head>
+<body class="app">
+
+<header th:replace="~{fragments/layout :: topbar('indicadores', ${admin}, ${usuario})}"></header>
+
+<main>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <nav class="caminho" aria-label="localização">admin / indicadores</nav>
+    <h1>Indicadores dos chamados</h1>
+
+    <section>
+        <h2>Panorama geral</h2>
+        <div class="painel">
+            <article class="card kpi">
+                <span>Total de chamados</span>
+                <strong th:text="${indicadores.total}">0</strong>
+            </article>
+            <article class="card kpi">
+                <span>Abertos</span>
+                <strong th:text="${indicadores.abertos}">0</strong>
+            </article>
+            <article class="card kpi">
+                <span>Em análise</span>
+                <strong th:text="${indicadores.emAnalise}">0</strong>
+            </article>
+            <article class="card kpi">
+                <span>Concluídos</span>
+                <strong th:text="${indicadores.concluidos}">0</strong>
+            </article>
+            <article class="card kpi">
+                <span>Cancelados</span>
+                <strong th:text="${indicadores.cancelados}">0</strong>
+            </article>
+            <article class="card kpi">
+                <span>Prioridade alta/urgente</span>
+                <strong th:text="${indicadores.altaPrioridade}">0</strong>
+            </article>
+        </div>
+    </section>
+
+    <section th:with="percentual=${#numbers.formatDecimal(indicadores.percentualConcluido, 1, 1)}">
+        <h2>Conclusão</h2>
+        <div class="conclusao">
+            <div class="donut" th:style="|background: conic-gradient(var(--sucesso) ${percentual}%, var(--borda) 0)|">
+                <span th:text="${percentual} + '%'">0%</span>
+            </div>
+            <div class="progresso">
+                <span>Percentual concluído</span>
+                <div class="barra">
+                    <div class="barra-preenchida" th:style="|width: ${percentual}%|"></div>
+                </div>
+                <p> Dos chamados registrados, <strong th:text="${indicadores.concluidos}">0</strong> foram concluídos.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<aside>
+    <section>
+        <h2>Ações rápidas</h2>
+        <ul>
+            <li><a th:href="@{/chamados}">Ver chamados</a></li>
+            <li><a th:href="@{/relatorios}">Gerar relatório</a></li>
+            <li><a th:href="@{/usuarios}">Gerenciar usuários</a></li>
+        </ul>
+    </section>
+</aside>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
