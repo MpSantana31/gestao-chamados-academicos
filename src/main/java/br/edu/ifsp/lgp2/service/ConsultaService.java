@@ -3,6 +3,7 @@ package br.edu.ifsp.lgp2.service;
 import br.edu.ifsp.lgp2.dto.FiltroChamadoDTO;
 import br.edu.ifsp.lgp2.dto.IndicadoresDTO;
 import br.edu.ifsp.lgp2.model.Chamado;
+import br.edu.ifsp.lgp2.model.Papel;
 import br.edu.ifsp.lgp2.repository.ChamadoRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Sort;
@@ -17,8 +18,14 @@ public class ConsultaService {
     public ConsultaService(ChamadoRepository repository) { this.repository = repository; }
 
     /** Cada filtro opcional gera um predicado AND; filtros vazios não restringem a consulta. */
-    public List<Chamado> consultar(FiltroChamadoDTO filtro) {
+    public List<Chamado> consultar(FiltroChamadoDTO filtro, String login, Papel papel) {
+        if (papel != Papel.ADMIN && login == null) {
+            return List.of();
+        }
         Specification<Chamado> regra = (raiz, query, cb) -> cb.conjunction();
+        if (papel != Papel.ADMIN) {
+            regra = regra.and((r, q, cb) -> cb.equal(r.get("requerente").get("login"), login));
+        }
         if (filtro.getBusca() != null && !filtro.getBusca().isBlank()) {
             String termo = "%" + filtro.getBusca().trim().toLowerCase(Locale.ROOT) + "%";
             regra = regra.and((r,q,cb) -> cb.or(
@@ -47,7 +54,9 @@ public class ConsultaService {
     public IndicadoresDTO indicadores() { return calcular(repository.findAll()); }
 
     /** Indicadores do recorte filtrado permitem confrontar listagem e painel. */
-    public IndicadoresDTO indicadores(FiltroChamadoDTO filtro) { return calcular(consultar(filtro)); }
+    public IndicadoresDTO indicadores(FiltroChamadoDTO filtro, String login, Papel papel) {
+        return calcular(consultar(filtro, login, papel));
+    }
 
     private IndicadoresDTO calcular(List<Chamado> itens) {
         long abertos=contar(itens,"ABERTO");

@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 
@@ -43,6 +45,10 @@ public class Chamado {
 
     @Column(length = 500)
     private String observacaoAtendimento;
+
+    @ManyToOne
+    @JoinColumn(name = "requerente_id", nullable = false)
+    private Usuario requerente;
 
     public Chamado() {
     }
@@ -125,5 +131,13 @@ public class Chamado {
 
     public void setObservacaoAtendimento(String observacaoAtendimento) {
         this.observacaoAtendimento = observacaoAtendimento;
+    }
+
+    public Usuario getRequerente() {
+        return requerente;
+    }
+
+    public void setRequerente(Usuario requerente) {
+        this.requerente = requerente;
     }
 }
