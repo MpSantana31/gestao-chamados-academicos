@@ -3,6 +3,7 @@ package br.edu.ifsp.lgp2.controller;
 import br.edu.ifsp.lgp2.config.UsuarioLogado;
 import br.edu.ifsp.lgp2.dto.ChamadoAtualizacaoStatusDTO;
 import br.edu.ifsp.lgp2.dto.ChamadoCadastroDTO;
+import br.edu.ifsp.lgp2.dto.ChamadoEdicaoDTO;
 import br.edu.ifsp.lgp2.dto.FiltroChamadoDTO;
 import br.edu.ifsp.lgp2.model.Chamado;
 import br.edu.ifsp.lgp2.model.Papel;
@@ -82,24 +83,34 @@ public class ChamadoController {
             return "redirect:/chamados";
         }
 
-        model.addAttribute("chamado", chamado);
+        ChamadoEdicaoDTO dto = new ChamadoEdicaoDTO();
+        dto.setId(chamado.getId());
+        dto.setTitulo(chamado.getTitulo());
+        dto.setDescricao(chamado.getDescricao());
+        dto.setCategoria(chamado.getCategoria());
+        dto.setStatus(chamado.getStatus());
+        dto.setPrioridade(chamado.getPrioridade());
+        dto.setResponsavel(chamado.getResponsavel());
+        dto.setObservacaoAtendimento(chamado.getObservacaoAtendimento());
+
+        model.addAttribute("chamadoEdicaoDTO", dto);
         model.addAttribute("admin", usuarioLogado.isAdmin(request));
         model.addAttribute("usuario", usuarioLogado.login(request));
         return "chamados/formulario-edicao";
     }
 
     @PostMapping("/chamados/atualizar")
-    public String atualizar(@ModelAttribute Chamado chamado,
+    public String atualizar(@ModelAttribute ChamadoEdicaoDTO dto,
                             RedirectAttributes redirectAttributes,
                             HttpServletRequest request) {
 
-        if (chamado.getTitulo() == null || chamado.getTitulo().isBlank()) {
+        if (dto.getTitulo() == null || dto.getTitulo().isBlank()) {
             redirectAttributes.addFlashAttribute("mensagemErro", "O título é obrigatório.");
-            return "redirect:/chamados/editar/" + chamado.getId();
+            return "redirect:/chamados/editar/" + dto.getId();
         }
 
         Chamado atualizado = chamadoService.atualizarChamado(
-                chamado, usuarioLogado.login(request), usuarioLogado.papel(request));
+                dto, usuarioLogado.login(request), usuarioLogado.papel(request));
         if (atualizado == null) {
             redirectAttributes.addFlashAttribute("mensagemErro", "Chamado não encontrado.");
             return "redirect:/chamados";

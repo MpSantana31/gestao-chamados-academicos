@@ -2,6 +2,7 @@ package br.edu.ifsp.lgp2.service;
 
 import br.edu.ifsp.lgp2.dto.ChamadoAtualizacaoStatusDTO;
 import br.edu.ifsp.lgp2.dto.ChamadoCadastroDTO;
+import br.edu.ifsp.lgp2.dto.ChamadoEdicaoDTO;
 import br.edu.ifsp.lgp2.factory.ChamadoFactory;
 import br.edu.ifsp.lgp2.model.Chamado;
 import br.edu.ifsp.lgp2.model.Papel;
@@ -34,10 +35,6 @@ public class ChamadoService {
                 .filter(chamado -> acessivel(chamado, login, papel));
     }
 
-    public boolean existe(Long id, String login, Papel papel) {
-        return buscarPorId(id, login, papel) != null;
-    }
-
     public long quantidadeChamados() {
         return chamadoRepository.count();
     }
@@ -56,18 +53,32 @@ public class ChamadoService {
         return chamadoRepository.save(chamado);
     }
 
-    public Chamado atualizarChamado(Chamado dados, String login, Papel papel) {
-        Chamado salvo = buscarPorId(dados.getId(), login, papel);
+    public Chamado atualizarChamado(ChamadoEdicaoDTO dto, String login, Papel papel) {
+        Chamado salvo = buscarPorId(dto.getId(), login, papel);
         if (salvo == null) {
             return null;
         }
-        salvo.setTitulo(dados.getTitulo());
-        salvo.setDescricao(dados.getDescricao());
-        salvo.setCategoria(dados.getCategoria());
-        salvo.setStatus(dados.getStatus());
-        salvo.setPrioridade(dados.getPrioridade());
-        salvo.setResponsavel(dados.getResponsavel());
-        salvo.setObservacaoAtendimento(dados.getObservacaoAtendimento());
+        // Os campos obrigatórios do banco só são sobrescritos quando vieram no DTO,
+        // assim uma atualização parcial pela API não apaga o que já estava gravado.
+        if (dto.getTitulo() != null) {
+            salvo.setTitulo(dto.getTitulo());
+        }
+        if (dto.getDescricao() != null) {
+            salvo.setDescricao(dto.getDescricao());
+        }
+        if (dto.getCategoria() != null) {
+            salvo.setCategoria(dto.getCategoria());
+        }
+        if (dto.getStatus() != null) {
+            salvo.setStatus(dto.getStatus());
+        }
+        if (dto.getPrioridade() != null) {
+            salvo.setPrioridade(dto.getPrioridade());
+        }
+        if (dto.getResponsavel() != null) {
+            salvo.setResponsavel(dto.getResponsavel());
+        }
+        salvo.setObservacaoAtendimento(dto.getObservacaoAtendimento());
         salvo.setDataAtualizacao(LocalDate.now());
         return chamadoRepository.save(salvo);
     }

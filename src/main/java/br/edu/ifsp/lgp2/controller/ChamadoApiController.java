@@ -3,6 +3,7 @@ package br.edu.ifsp.lgp2.controller;
 import br.edu.ifsp.lgp2.config.UsuarioLogado;
 import br.edu.ifsp.lgp2.dto.ChamadoAtualizacaoStatusDTO;
 import br.edu.ifsp.lgp2.dto.ChamadoCadastroDTO;
+import br.edu.ifsp.lgp2.dto.ChamadoEdicaoDTO;
 import br.edu.ifsp.lgp2.dto.FiltroChamadoDTO;
 import br.edu.ifsp.lgp2.dto.IndicadoresDTO;
 import br.edu.ifsp.lgp2.model.Chamado;
@@ -57,6 +58,18 @@ public class ChamadoApiController {
         }
         Chamado criado = chamados.salvarNovoChamado(dto, usuarioLogado.login(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Chamado> atualizar(@PathVariable Long id,
+                                             @RequestBody ChamadoEdicaoDTO dto,
+                                             HttpServletRequest request) {
+        if (!usuarioLogado.isAdmin(request)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        dto.setId(id);
+        return ResponseEntity.of(Optional.ofNullable(
+                chamados.atualizarChamado(dto, usuarioLogado.login(request), usuarioLogado.papel(request))));
     }
 
     @PutMapping("/{id}/status")

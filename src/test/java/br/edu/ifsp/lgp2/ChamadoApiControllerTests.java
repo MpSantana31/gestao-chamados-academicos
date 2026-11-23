@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.jpa.hibernate.ddl-auto=create-drop"
 })
 @AutoConfigureMockMvc
+@Transactional
 class ChamadoApiControllerTests {
 
     @Autowired
@@ -92,6 +94,68 @@ class ChamadoApiControllerTests {
                         .sessionAttr("usuario", "admin")
                         .sessionAttr("papel", Papel.ADMIN))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void adminAtualizaChamadoPelaApi() throws Exception {
+        mockMvc.perform(put("/api/chamados/1")
+                        .sessionAttr("usuario", "admin")
+                        .sessionAttr("papel", Papel.ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"titulo\":\"Titulo atualizado\",\"status\":\"EM_ANALISE\",\"prioridade\":\"URGENTE\",\"responsavel\":\"Equipe de TI\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.titulo").value("Titulo atualizado"))
+                .andExpect(jsonPath("$.status").value("EM_ANALISE"))
+                .andExpect(jsonPath("$.prioridade").value("URGENTE"));
+
+        mockMvc.perform(get("/api/chamados/1")
+                        .sessionAttr("usuario", "admin")
+                        .sessionAttr("papel", Papel.ADMIN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.titulo").value("Titulo atualizado"));
+    }
+
+    @Test
+    void atualizacaoParcialMantemCamposObrigatorios() throws Exception {
+        mockMvc.perform(put("/api/chamados/1")
+                        .sessionAttr("usuario", "admin")
+                        .sessionAttr("papel", Papel.ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"CONCLUIDO\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CONCLUIDO"))
+                .andExpect(jsonPath("$.titulo").value("Problema no laboratório"))
+                .andExpect(jsonPath("$.responsavel").value("Equipe de TI"));
+    }
+
+    @Test
+    void usuarioNaoPodeAtualizarChamado() throws Exception {
+        mockMvc.perform(put("/api/chamados/1")
+                        .sessionAttr("usuario", "aluno")
+                        .sessionAttr("papel", Papel.USUARIO)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"titulo\":\"Tentativa\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void atualizarChamadoInexistenteRetorna404() throws Exception {
+        mockMvc.perform(put("/api/chamados/9999")
+                        .sessionAttr("usuario", "admin")
+                        .sessionAttr("papel", Papel.ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"titulo\":\"Nao existe\"}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void statusInvalidoERecusado() throws Exception {
+        mockMvc.perform(put("/api/chamados/1/status")
+                        .sessionAttr("usuario", "admin")
+                        .sessionAttr("papel", Papel.ADMIN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"BANANA\"}"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

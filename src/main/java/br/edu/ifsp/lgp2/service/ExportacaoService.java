@@ -19,10 +19,12 @@ public class ExportacaoService {
     private static final String[] COLUNAS={"ID","Titulo","Categoria","Status","Prioridade","Responsavel","Abertura"};
     private String[] linha(Chamado c) {
         return new String[]{String.valueOf(c.getId()), texto(c.getTitulo()),texto(c.getCategoria()),
-                texto(c.getStatus()),texto(c.getPrioridade()),texto(c.getResponsavel()),
+                enumTexto(c.getStatus()),enumTexto(c.getPrioridade()),texto(c.getResponsavel()),
                 c.getDataAbertura()==null?"":c.getDataAbertura().toString()};
     }
     private String texto(String s) {return s==null?"":s;}
+    /** Status e prioridade agora são enums: o arquivo recebe o nome do valor. */
+    private String enumTexto(Enum<?> valor) {return valor==null?"":valor.name();}
 
     /** CSV: UTF-8 com BOM para abrir acentos no Excel; ponto e vírgula como separador. */
     public byte[] csv(List<Chamado> itens) {
@@ -95,7 +97,7 @@ public class ExportacaoService {
         }
     }
     private String formatar(Chamado c) {
-        return c.getId()+" | "+limitar(c.getTitulo(),31)+" | "+c.getStatus()+" | "+c.getPrioridade()+" | "+limitar(c.getResponsavel(),17);
+        return c.getId()+" | "+limitar(c.getTitulo(),31)+" | "+enumTexto(c.getStatus())+" | "+enumTexto(c.getPrioridade())+" | "+limitar(c.getResponsavel(),17);
     }
     private String limitar(String t,int tamanho) {t=texto(t);return t.length()>tamanho?t.substring(0,tamanho-3)+"...":t;}
     private String normalizarPdf(String texto) {

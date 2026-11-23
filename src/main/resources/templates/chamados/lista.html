@@ -21,10 +21,10 @@
                 <label>Status
                     <select name="status">
                         <option value="">Todos</option>
-                        <option value="ABERTO" th:selected="${filtro.status == 'ABERTO'}">ABERTO</option>
-                        <option value="EM_ANALISE" th:selected="${filtro.status == 'EM_ANALISE'}">EM_ANALISE</option>
-                        <option value="CONCLUIDO" th:selected="${filtro.status == 'CONCLUIDO'}">CONCLUIDO</option>
-                        <option value="CANCELADO" th:selected="${filtro.status == 'CANCELADO'}">CANCELADO</option>
+                        <option value="ABERTO" th:selected="${filtro.status != null and filtro.status.name() == 'ABERTO'}">ABERTO</option>
+                        <option value="EM_ANALISE" th:selected="${filtro.status != null and filtro.status.name() == 'EM_ANALISE'}">EM_ANALISE</option>
+                        <option value="CONCLUIDO" th:selected="${filtro.status != null and filtro.status.name() == 'CONCLUIDO'}">CONCLUIDO</option>
+                        <option value="CANCELADO" th:selected="${filtro.status != null and filtro.status.name() == 'CANCELADO'}">CANCELADO</option>
                     </select>
                 </label>
                 <label>Categoria
@@ -39,10 +39,10 @@
                 <label>Prioridade
                     <select name="prioridade">
                         <option value="">Todas</option>
-                        <option value="BAIXA" th:selected="${filtro.prioridade == 'BAIXA'}">BAIXA</option>
-                        <option value="MEDIA" th:selected="${filtro.prioridade == 'MEDIA'}">MEDIA</option>
-                        <option value="ALTA" th:selected="${filtro.prioridade == 'ALTA'}">ALTA</option>
-                        <option value="URGENTE" th:selected="${filtro.prioridade == 'URGENTE'}">URGENTE</option>
+                        <option value="BAIXA" th:selected="${filtro.prioridade != null and filtro.prioridade.name() == 'BAIXA'}">BAIXA</option>
+                        <option value="MEDIA" th:selected="${filtro.prioridade != null and filtro.prioridade.name() == 'MEDIA'}">MEDIA</option>
+                        <option value="ALTA" th:selected="${filtro.prioridade != null and filtro.prioridade.name() == 'ALTA'}">ALTA</option>
+                        <option value="URGENTE" th:selected="${filtro.prioridade != null and filtro.prioridade.name() == 'URGENTE'}">URGENTE</option>
                     </select>
                 </label>
                 <label>De

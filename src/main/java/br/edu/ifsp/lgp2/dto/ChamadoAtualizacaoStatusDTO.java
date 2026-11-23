@@ -1,5 +1,7 @@
 package br.edu.ifsp.lgp2.dto;
 
+import br.edu.ifsp.lgp2.model.StatusChamado;
+
 /*
  * DTO da atividade prática.
  *
@@ -10,13 +12,13 @@ package br.edu.ifsp.lgp2.dto;
 public class ChamadoAtualizacaoStatusDTO {
 
     private Long id;
-    private String status;
+    private StatusChamado status;
     private String observacaoAtendimento;
 
     public ChamadoAtualizacaoStatusDTO() {
     }
 
-    public ChamadoAtualizacaoStatusDTO(Long id, String status, String observacaoAtendimento) {
+    public ChamadoAtualizacaoStatusDTO(Long id, StatusChamado status, String observacaoAtendimento) {
         this.id = id;
         this.status = status;
         this.observacaoAtendimento = observacaoAtendimento;
@@ -30,11 +32,11 @@ public class ChamadoAtualizacaoStatusDTO {
         this.id = id;
     }
 
-    public String getStatus() {
+    public StatusChamado getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusChamado status) {
         this.status = status;
     }
 

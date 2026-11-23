@@ -2,6 +2,8 @@ package br.edu.ifsp.lgp2.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,11 +32,13 @@ public class Chamado {
     @Column(nullable = false, length = 80)
     private String categoria;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private String status;
+    private StatusChamado status;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private String prioridade;
+    private Prioridade prioridade;
 
     @Column(nullable = false, length = 100)
     private String responsavel;
@@ -85,19 +89,19 @@ public class Chamado {
         this.categoria = categoria;
     }
 
-    public String getStatus() {
+    public StatusChamado getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusChamado status) {
         this.status = status;
     }
 
-    public String getPrioridade() {
+    public Prioridade getPrioridade() {
         return prioridade;
     }
 
-    public void setPrioridade(String prioridade) {
+    public void setPrioridade(Prioridade prioridade) {
         this.prioridade = prioridade;
     }
 

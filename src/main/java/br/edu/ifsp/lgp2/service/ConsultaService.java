@@ -4,6 +4,8 @@ import br.edu.ifsp.lgp2.dto.FiltroChamadoDTO;
 import br.edu.ifsp.lgp2.dto.IndicadoresDTO;
 import br.edu.ifsp.lgp2.model.Chamado;
 import br.edu.ifsp.lgp2.model.Papel;
+import br.edu.ifsp.lgp2.model.Prioridade;
+import br.edu.ifsp.lgp2.model.StatusChamado;
 import br.edu.ifsp.lgp2.repository.ChamadoRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Sort;
@@ -32,13 +34,13 @@ public class ConsultaService {
                 cb.like(cb.lower(r.get("titulo")), termo),
                 cb.like(cb.lower(r.get("descricao")), termo)));
         }
-        if (filtro.getStatus() != null && !filtro.getStatus().isBlank()) {
+        if (filtro.getStatus() != null) {
             regra = regra.and((r,q,cb) -> cb.equal(r.get("status"), filtro.getStatus()));
         }
         if (filtro.getCategoria() != null && !filtro.getCategoria().isBlank()) {
             regra = regra.and((r,q,cb) -> cb.equal(r.get("categoria"), filtro.getCategoria()));
         }
-        if (filtro.getPrioridade() != null && !filtro.getPrioridade().isBlank()) {
+        if (filtro.getPrioridade() != null) {
             regra = regra.and((r,q,cb) -> cb.equal(r.get("prioridade"), filtro.getPrioridade()));
         }
         if (filtro.getInicio() != null) {
@@ -59,15 +61,15 @@ public class ConsultaService {
     }
 
     private IndicadoresDTO calcular(List<Chamado> itens) {
-        long abertos=contar(itens,"ABERTO");
-        long analise=contar(itens,"EM_ANALISE");
-        long concluidos=contar(itens,"CONCLUIDO");
-        long cancelados=contar(itens,"CANCELADO");
-        long altas=itens.stream().filter(c -> "ALTA".equals(c.getPrioridade()) || "URGENTE".equals(c.getPrioridade())).count();
+        long abertos=contar(itens,StatusChamado.ABERTO);
+        long analise=contar(itens,StatusChamado.EM_ANALISE);
+        long concluidos=contar(itens,StatusChamado.CONCLUIDO);
+        long cancelados=contar(itens,StatusChamado.CANCELADO);
+        long altas=itens.stream().filter(c -> c.getPrioridade()==Prioridade.ALTA || c.getPrioridade()==Prioridade.URGENTE).count();
         double percentual=itens.isEmpty()?0:concluidos*100.0/itens.size();
         return new IndicadoresDTO(itens.size(), abertos, analise, concluidos, cancelados, altas, percentual);
     }
-    private long contar(List<Chamado> itens,String status) {
-        return itens.stream().filter(c -> status.equals(c.getStatus())).count();
+    private long contar(List<Chamado> itens,StatusChamado status) {
+        return itens.stream().filter(c -> status==c.getStatus()).count();
     }
 }
